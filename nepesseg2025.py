@@ -26,7 +26,8 @@ def megye_adatai(kapott_megyekod):
     ossz_lelekszam = 0
     varos_lelekszam = 0
     for i in megye_telepulesei:
-        if i["telepules"] == varos_tipusok[0:]:
+        t_tipus = i["tipus"]
+        if t_tipus == varos_tipusok[0] or t_tipus == varos_tipusok[1] or t_tipus == varos_tipusok[2] or t_tipus == varos_tipusok[3]:
             varos_lelekszam += i["ferfi"] + i["no"]
         ossz_lelekszam += i["ferfi"] + i["no"]
     osszes_adat = {
