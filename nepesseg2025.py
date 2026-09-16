@@ -98,7 +98,7 @@ def main():
                     megye_adatok = megye_adatai(bekert_megye_kod)
                     print()
                     if megye_adatok:
-                        print(f"Települések száma a megyében: {megye_adatok["telepulesek_szama"]} db \n Megyében élők száma: {megye_adatok["lelekszam"]} fő \n Városokban élők száma: {megye_adatok["v_lelekszam"]} fő")
+                        print(f"Települések száma a megyében: {megye_adatok["telepulesek_szama"]} db\nMegyében élők száma: {megye_adatok["lelekszam"]} fő\nVárosokban élők száma: {megye_adatok["v_lelekszam"]} fő")
                         print()
                         break
                     else:
