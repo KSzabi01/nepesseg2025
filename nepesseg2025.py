@@ -44,14 +44,15 @@ def megye_adatai(kapott_megyekod):
 
 def print_oldal(bejovo_lista, oldal):
     terminal_meret = os.get_terminal_size()
-    per_oldal = terminal_meret.lines - 7  # terminál magasság sorokban
+    per_oldal = terminal_meret.lines - 7  # terminál magasság sorokban - a 7 fixen print-elt sor
     total = math.ceil(len(bejovo_lista) / per_oldal)    # felfelé kerekít
-    oldal = max(1, min(oldal, total))                   # nem lehessen a max oldalszámon túl ugrani vagy 0 alá menni
+    # oldal = max(1, min(oldal, total))                   # nem lehessen a max oldalszámon túl ugrani vagy 0 alá menni
     start = (oldal - 1) * per_oldal                     # első sor indexe
-    print("\nSorszám | Település | Népesség (fő)\n")
+    print(f"\nSorszám | Település Neve | Népesség (fő)\n")
     for i, sor in enumerate(bejovo_lista[start:start + per_oldal], start + 1):
-        print(f"{i:>7}  {sor["telepules"]:<11}, {sor["ferfi"] + sor["no"]}")
-    print(f"\n--- {oldal}/{total} oldal ---\n")
+        print(f"{i:>7}  {sor["telepules"]:<16}, {sor["ferfi"] + sor["no"]}")
+    print("\n"+ f"{oldal}/{total} oldal".center(40,"-")+ "\n")
+    return total
 
 
 def telepules_tipusai(bejovo_tipus):
@@ -82,8 +83,10 @@ def telepules_tipusai(bejovo_tipus):
 def main():
     print()
     while True:
-        print("Népesség 2025")
-        print("--------\n Főmenü\n--------\n [1] Megye adatai \n [2] Település típusai \n [X] Kilépés")
+        terminal_szelesseg = os.get_terminal_size().columns
+        print("Népesség 2025".center(terminal_szelesseg, " "))
+        print("".center(20, "-").center(terminal_szelesseg, " ")+"Főmenü".center(terminal_szelesseg, " ")+"".center(15, "-").center(terminal_szelesseg, " ")) 
+        print(" [1] Megye adatai\n [2] Település típusai\n [3] Fentiek törlése\n [X] Kilépés")
         valasztas = input("Írja be a menüpont előtti karaktert, majd nyomjon [Enter]-t: ").strip().lower()
         match valasztas:
             case "x":
@@ -106,11 +109,11 @@ def main():
                             break
             case "2":
                 print("\033[2J\033[HVálasszon egy település típust:\n [A] Község\n [B] Nagyközség\n [C] Város\n [D] Vármegyei jogú város\n [E] Vármegye székhely\n [F] Fővárosi kerület")
-                bekert_tipus = input("Adja meg a választott típus betűjét: ")
+                bekert_tipus = input("Adja meg a választott típus betűjét: ").strip().lower()
                 kert_telepulesek = telepules_tipusai(bekert_tipus)
                 if kert_telepulesek:
                     navigalt_oldal = 1
-                    print_oldal(kert_telepulesek, navigalt_oldal)
+                    max_oldalszam = print_oldal(kert_telepulesek, navigalt_oldal)
                     while True:
                         print("<-[J] előző oldal -- <szám> ugrás az oldalra -- [L] következő oldal ->")
                         bekert_oldal = input("Válasszon a fentiek közül majd nyomjon [Enter]-t ([X] - főmenü): ")
@@ -119,16 +122,21 @@ def main():
                                 break
                             case "j":
                                 navigalt_oldal -= 1
+                                navigalt_oldal = max(1, min(navigalt_oldal, max_oldalszam))
                             case "l":
                                 navigalt_oldal += 1
+                                navigalt_oldal = max(1, min(navigalt_oldal, max_oldalszam))
                             case _:
                                 if bekert_oldal.isnumeric():
                                     navigalt_oldal = int(bekert_oldal)
+                                    navigalt_oldal = max(1, min(navigalt_oldal, max_oldalszam))
                                 else:
                                     print("\nNincs ilyen opció!")
-                        print_oldal(kert_telepulesek, navigalt_oldal)
+                        max_oldalszam = print_oldal(kert_telepulesek, navigalt_oldal)
                 else:
                     print("Nincs ilyen opció")
+            case "3":
+                print("\033[2J\033[H")
             case _:
                 print("\nNincs ilyen opció!\n")
 
